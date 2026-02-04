@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hi bbpie!</title>
+    <title>To my bbpie 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
     <style>
         body {
             display: flex;
@@ -15,10 +14,24 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #ffe1fe; /* Light Pink/Lavender */
-            font-family: 'Indie Flower', cursive; /* Applied cute font */
+            background-color: #ffe1fe;
+            font-family: 'Indie Flower', cursive;
             overflow: hidden;
             text-align: center;
+        }
+
+        /* Floating Hearts Background */
+        .heart {
+            position: fixed;
+            top: -10vh;
+            font-size: 2rem;
+            opacity: 0.6;
+            z-index: 0;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
         #container {
@@ -26,24 +39,22 @@
             padding: 50px;
             border-radius: 40px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            z-index: 1;
-            max-width: 500px; /* Wider container */
+            z-index: 10;
+            max-width: 500px;
             width: 90%;
+            position: relative;
         }
 
         h1 {
             color: #d63384;
-            font-size: 3rem; /* Bigger text */
+            font-size: 3rem;
             margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 1.5rem;
+            min-height: 80px; /* Prevents jumping during typewriter effect */
         }
 
         .gif-container img {
-            width: 100%; /* Makes the GIF fill the container width */
-            max-width: 350px; /* Increased size */
+            width: 100%;
+            max-width: 350px;
             border-radius: 20px;
             margin-bottom: 20px;
         }
@@ -53,11 +64,12 @@
             gap: 20px;
             justify-content: center;
             margin-top: 20px;
+            align-items: center;
         }
 
         button {
-            padding: 18px 35px;
-            font-size: 1.5rem; /* Bigger buttons */
+            padding: 15px 30px;
+            font-size: 1.5rem;
             font-family: 'Indie Flower', cursive;
             font-weight: bold;
             border: none;
@@ -72,21 +84,12 @@
             box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
         }
 
-        .primary-btn:hover {
-            background-color: #ff758f;
-            transform: scale(1.1);
-        }
-
         #noBtn {
             background-color: #adb5bd;
             color: white;
-            position: relative;
-            z-index: 999;
         }
 
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -106,7 +109,7 @@
             <div class="gif-container">
                 <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YzNGMwaGczY2o0em94YjE1c3dkeDdkOWl2dTE3enJmNm9zeXE5dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjHkRHSuHqu99y9Yjt/giphy.gif" alt="Milk Mocha heart">
             </div>
-            <h1>Will You Be My Valentine? 💖</h1>
+            <h1 id="typewriter"></h1>
             <div class="buttons">
                 <button id="yesBtn" class="primary-btn">YES!</button>
                 <button id="noBtn">no</button>
@@ -118,39 +121,55 @@
                 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXN6cXNueG16Ynk0Y3p4eXF4eXF4eXF4eXF4eXF4eXF4eXF4eXF4JnB0PWFjdGlvbl9hcnRpY2xlX2luc2lkZSZvPXBhc3NlZCZzPXp1Y2NoaW5p/IzXiddo2twMmdmU8Lv/giphy.gif" alt="Milk Mocha Hug">
             </div>
             <h1>⭐ YAY ⭐</h1>
-            <p style="color: #d63384; font-weight: bold;">I Love You!</p>
+            <p style="color: #d63384; font-size: 1.8rem; font-weight: bold;">I Love You!</p>
         </div>
     </div>
 
     <script>
+        let yesSize = 1;
+
         function showPage(pageNumber) {
-            document.getElementById('page1').classList.add('hidden');
-            document.getElementById('page2').classList.add('hidden');
-            document.getElementById('page3').classList.add('hidden');
+            document.querySelectorAll('#container > div').forEach(div => div.classList.add('hidden'));
             document.getElementById('page' + pageNumber).classList.remove('hidden');
+
+            if (pageNumber === 2) {
+                startTypewriter("Will You Be My Valentine? 💖");
+            }
         }
 
+        // Typewriter Effect
+        function startTypewriter(text) {
+            const h1 = document.getElementById('typewriter');
+            h1.innerHTML = "";
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    h1.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 100);
+                }
+            }
+            type();
+        }
+
+        // Runaway & Growing Button Logic
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
 
-        // Logic to move the "No" button
-        noBtn.addEventListener('mouseover', () => {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            noBtn.style.position = 'fixed'; // Use fixed to move relative to screen
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
-        });
-
-        // For touch devices (if he tries to tap 'no')
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
+        const moveButton = () => {
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             noBtn.style.position = 'fixed';
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
-        });
+
+            // Make Yes Button Grow
+            yesSize += 0.15;
+            yesBtn.style.transform = `scale(${yesSize})`;
+        };
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
         yesBtn.addEventListener('click', () => {
             showPage(3);
@@ -158,9 +177,20 @@
                 particleCount: 200,
                 spread: 100,
                 origin: { y: 0.6 },
-                colors: ['#ff4d6d', '#ff758f', '#ffb3c1', '#ffffff']
+                colors: ['#ff4d6d', '#ff758f', '#ffb3c1']
             });
         });
+
+        // Floating Hearts Background Logic
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = ['💖', '💝', '❤️', '💕'][Math.floor(Math.random() * 4)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }, 400);
     </script>
 </body>
 </html>
