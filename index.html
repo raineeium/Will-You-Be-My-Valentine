@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To my bbpie 💖</title>
+    <title>For my bbpie 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -20,12 +20,12 @@
             text-align: center;
         }
 
-        /* Floating Hearts Background */
-        .heart {
+        /* Falling Elements Styling */
+        .falling-item {
             position: fixed;
             top: -10vh;
-            font-size: 2rem;
-            opacity: 0.6;
+            user-select: none;
+            pointer-events: none;
             z-index: 0;
             animation: fall linear forwards;
         }
@@ -49,7 +49,7 @@
             color: #d63384;
             font-size: 3rem;
             margin-bottom: 20px;
-            min-height: 80px; /* Prevents jumping during typewriter effect */
+            min-height: 120px; /* Space for the typewriter text */
         }
 
         .gif-container img {
@@ -128,17 +128,18 @@
     <script>
         let yesSize = 1;
 
+        // --- PAGE TRANSITION LOGIC ---
         function showPage(pageNumber) {
             document.querySelectorAll('#container > div').forEach(div => div.classList.add('hidden'));
             document.getElementById('page' + pageNumber).classList.remove('hidden');
 
             if (pageNumber === 2) {
-                startTypewriter("Will You Be My Valentine? 💖");
+                // Slower speed (150ms)
+                startTypewriter("Will You Be My Valentine?", 150);
             }
         }
 
-        // Typewriter Effect
-        function startTypewriter(text) {
+        function startTypewriter(text, speed) {
             const h1 = document.getElementById('typewriter');
             h1.innerHTML = "";
             let i = 0;
@@ -146,13 +147,13 @@
                 if (i < text.length) {
                     h1.innerHTML += text.charAt(i);
                     i++;
-                    setTimeout(type, 100);
+                    setTimeout(type, speed);
                 }
             }
             type();
         }
 
-        // Runaway & Growing Button Logic
+        // --- RUNAWAY BUTTON LOGIC ---
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
 
@@ -162,9 +163,7 @@
             noBtn.style.position = 'fixed';
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
-
-            // Make Yes Button Grow
-            yesSize += 0.15;
+            yesSize += 0.2;
             yesBtn.style.transform = `scale(${yesSize})`;
         };
 
@@ -181,16 +180,43 @@
             });
         });
 
-        // Floating Hearts Background Logic
-        setInterval(() => {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = ['💖', '💝', '❤️', '💕'][Math.floor(Math.random() * 4)];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }, 400);
+        // --- FALLING HEARTS & STARS LOGIC ---
+        function createFallingItem(isInitial = false) {
+            const item = document.createElement('div');
+            item.classList.add('falling-item');
+            
+            // Randomly choose between heart and star emojis
+            const items = ['💖', '💝', '❤️', '💕', '⭐', '✨', '🌟'];
+            item.innerHTML = items[Math.floor(Math.random() * items.length)];
+            
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+            
+            const duration = (Math.random() * 3 + 3); // 3-6 seconds
+            item.style.animationDuration = duration + 's';
+            
+            // If initial, randomize the vertical start position so they are already on screen
+            if (isInitial) {
+                const randomStart = Math.random() * 100;
+                item.style.top = randomStart + 'vh';
+                // Adjust animation to finish relative to starting point
+                item.style.animationDelay = `-${Math.random() * duration}s`;
+            }
+
+            document.body.appendChild(heartContainer); // This was a typo fix:
+            document.body.appendChild(item);
+            
+            // Clean up
+            setTimeout(() => item.remove(), 6000);
+        }
+
+        // 1. Create initial batch instantly
+        for(let i = 0; i < 30; i++) {
+            createFallingItem(true);
+        }
+
+        // 2. Keep generating new ones
+        setInterval(() => createFallingItem(false), 300);
     </script>
 </body>
 </html>
