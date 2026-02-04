@@ -20,13 +20,12 @@
             text-align: center;
         }
 
-        /* Falling Elements Styling */
         .falling-item {
             position: fixed;
             top: -10vh;
             user-select: none;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
             animation: fall linear forwards;
         }
 
@@ -47,14 +46,16 @@
 
         h1 {
             color: #d63384;
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin-bottom: 20px;
-            min-height: 120px; /* Space for the typewriter text */
+            /* Ensures space is reserved even when text is empty */
+            display: block;
+            min-height: 3.5rem; 
         }
 
         .gif-container img {
             width: 100%;
-            max-width: 350px;
+            max-width: 300px;
             border-radius: 20px;
             margin-bottom: 20px;
         }
@@ -69,7 +70,7 @@
 
         button {
             padding: 15px 30px;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-family: 'Indie Flower', cursive;
             font-weight: bold;
             border: none;
@@ -87,9 +88,10 @@
         #noBtn {
             background-color: #adb5bd;
             color: white;
+            transition: 0.1s; /* Faster jump */
         }
 
-        .hidden { display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -109,7 +111,7 @@
             <div class="gif-container">
                 <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YzNGMwaGczY2o0em94YjE1c3dkeDdkOWl2dTE3enJmNm9zeXE5dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjHkRHSuHqu99y9Yjt/giphy.gif" alt="Milk Mocha heart">
             </div>
-            <h1 id="typewriter"></h1>
+            <h1 id="typewriterText"></h1>
             <div class="buttons">
                 <button id="yesBtn" class="primary-btn">YES!</button>
                 <button id="noBtn">no</button>
@@ -127,33 +129,41 @@
 
     <script>
         let yesSize = 1;
+        let isTyping = false;
 
-        // --- PAGE TRANSITION LOGIC ---
         function showPage(pageNumber) {
-            document.querySelectorAll('#container > div').forEach(div => div.classList.add('hidden'));
-            document.getElementById('page' + pageNumber).classList.remove('hidden');
+            // Hide all pages
+            document.getElementById('page1').classList.add('hidden');
+            document.getElementById('page2').classList.add('hidden');
+            document.getElementById('page3').classList.add('hidden');
 
-            if (pageNumber === 2) {
-                // Slower speed (150ms)
-                startTypewriter("Will You Be My Valentine?", 150);
+            // Show selected page
+            const currentPage = document.getElementById('page' + pageNumber);
+            currentPage.classList.remove('hidden');
+
+            if (pageNumber === 2 && !isTyping) {
+                startTypewriter("Will You Be My Valentine?");
             }
         }
 
-        function startTypewriter(text, speed) {
-            const h1 = document.getElementById('typewriter');
-            h1.innerHTML = "";
+        function startTypewriter(text) {
+            isTyping = true;
+            const target = document.getElementById('typewriterText');
+            target.innerHTML = ""; 
             let i = 0;
+            
             function type() {
                 if (i < text.length) {
-                    h1.innerHTML += text.charAt(i);
+                    target.innerHTML += text.charAt(i);
                     i++;
-                    setTimeout(type, speed);
+                    setTimeout(type, 150); // Slower speed as requested
+                } else {
+                    isTyping = false;
                 }
             }
             type();
         }
 
-        // --- RUNAWAY BUTTON LOGIC ---
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
 
@@ -163,6 +173,7 @@
             noBtn.style.position = 'fixed';
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
+            
             yesSize += 0.2;
             yesBtn.style.transform = `scale(${yesSize})`;
         };
@@ -180,43 +191,27 @@
             });
         });
 
-        // --- FALLING HEARTS & STARS LOGIC ---
+        // --- FALLING LOGIC ---
         function createFallingItem(isInitial = false) {
             const item = document.createElement('div');
             item.classList.add('falling-item');
-            
-            // Randomly choose between heart and star emojis
             const items = ['💖', '💝', '❤️', '💕', '⭐', '✨', '🌟'];
             item.innerHTML = items[Math.floor(Math.random() * items.length)];
-            
             item.style.left = Math.random() * 100 + 'vw';
             item.style.fontSize = (Math.random() * 1 + 1) + 'rem';
-            
-            const duration = (Math.random() * 3 + 3); // 3-6 seconds
+            const duration = (Math.random() * 3 + 4);
             item.style.animationDuration = duration + 's';
             
-            // If initial, randomize the vertical start position so they are already on screen
             if (isInitial) {
-                const randomStart = Math.random() * 100;
-                item.style.top = randomStart + 'vh';
-                // Adjust animation to finish relative to starting point
+                item.style.top = Math.random() * 100 + 'vh';
                 item.style.animationDelay = `-${Math.random() * duration}s`;
             }
-
-            document.body.appendChild(heartContainer); // This was a typo fix:
             document.body.appendChild(item);
-            
-            // Clean up
-            setTimeout(() => item.remove(), 6000);
+            setTimeout(() => item.remove(), duration * 1000);
         }
 
-        // 1. Create initial batch instantly
-        for(let i = 0; i < 30; i++) {
-            createFallingItem(true);
-        }
-
-        // 2. Keep generating new ones
-        setInterval(() => createFallingItem(false), 300);
+        for(let i = 0; i < 40; i++) { createFallingItem(true); }
+        setInterval(() => createFallingItem(false), 200);
     </script>
 </body>
 </html>
