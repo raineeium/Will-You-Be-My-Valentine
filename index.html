@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hi bbpie</title>
+    <title>Hi bbpie!</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
@@ -13,7 +13,7 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #ffe4e1; /* Light Pink */
+            background-color: #ffe1fe; /* Light Pink */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             text-align: center;
@@ -21,20 +21,23 @@
 
         #container {
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             z-index: 1;
+            max-width: 400px;
+            width: 90%;
         }
 
         h1 {
             color: #d63384;
-            font-size: 2rem;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
         }
 
         .gif-container img {
-            width: 200px;
-            border-radius: 10px;
+            width: 230px;
+            border-radius: 15px;
             margin-bottom: 20px;
         }
 
@@ -43,7 +46,6 @@
             gap: 20px;
             justify-content: center;
             margin-top: 20px;
-            position: relative;
         }
 
         button {
@@ -53,18 +55,24 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
-        #yesBtn {
+        .primary-btn {
             background-color: #ff4d6d;
             color: white;
+        }
+
+        .primary-btn:hover {
+            background-color: #ff758f;
+            transform: scale(1.05);
         }
 
         #noBtn {
             background-color: #adb5bd;
             color: white;
-            position: relative;
+            position: relative; /* Essential for the moving logic */
+            z-index: 999;
         }
 
         .hidden {
@@ -75,34 +83,52 @@
 <body>
 
     <div id="container">
-        <div id="ask-section">
+        <div id="page1">
             <div class="gif-container">
-                <img id="main-gif" src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXFvY2EwYnIyejF2dzlqcTB2bDJ1cHNtYnZseDJicHJsN2d2N2RwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sXLlNXpAjw1XVKuoyB/giphy.gif" alt="Cute dog">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueW9oN3V4eHh3OHd4OHd4OHd4OHd4OHd4OHd4OHd4OHd4OHd4JnB0PWFjdGlvbl9hcnRpY2xlX2luc2lkZSZvPXBhc3NlZCZzPXp1Y2NoaW5p/c76IJLufpNUMo/giphy.gif" alt="Waving cat">
             </div>
-            <h1 id="question">Will you be my Valentine? 💖</h1>
+            <h1>hi bbpie!</h1>
             <div class="buttons">
-                <button id="yesBtn">YES!</button>
+                <button class="primary-btn" onclick="showPage(2)">yes my love?</button>
+            </div>
+        </div>
+
+        <div id="page2" class="hidden">
+            <div class="gif-container">
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXFvY2EwYnIyejF2dzlqcTB2bDJ1cHNtYnZseDJicHJsN2d2N2RwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sXLlNXpAjw1XVKuoyB/giphy.gif" alt="Cute dog">
+            </div>
+            <h1>Will you be my Valentine? 💖</h1>
+            <div class="buttons">
+                <button id="yesBtn" class="primary-btn">YES!</button>
                 <button id="noBtn">no</button>
             </div>
         </div>
 
-        <div id="success-section" class="hidden">
+        <div id="page3" class="hidden">
             <div class="gif-container">
-                <img src="https://giphy.com/gifs/milk-and-mocha-bear-IzXiddo2twMmdmU8Lv" alt="milk mocha hug">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXN6cXNueG16Ynk0Y3p4eXF4eXF4eXF4eXF4eXF4eXF4eXF4eXF4JnB0PWFjdGlvbl9hcnRpY2xlX2luc2lkZSZvPXBhc3NlZCZzPXp1Y2NoaW5p/IzXiddo2twMmdmU8Lv/giphy.gif" alt="Milk Mocha Hug">
             </div>
             <h1>YAY! 🥰</h1>
-            <p>I love you!</p>
+            <p style="color: #d63384; font-weight: bold;">I love you so much!</p>
         </div>
     </div>
 
     <script>
-        const yesBtn = document.getElementById('yesBtn');
+        // Function to switch between "pages"
+        function showPage(pageNumber) {
+            document.getElementById('page1').classList.add('hidden');
+            document.getElementById('page2').classList.add('hidden');
+            document.getElementById('page3').classList.add('hidden');
+            
+            document.getElementById('page' + pageNumber).classList.remove('hidden');
+        }
+
         const noBtn = document.getElementById('noBtn');
-        const askSection = document.getElementById('ask-section');
-        const successSection = document.getElementById('success-section');
+        const yesBtn = document.getElementById('yesBtn');
 
         // The "Runaway No" Logic
         noBtn.addEventListener('mouseover', () => {
+            // Calculate random position within the viewport
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             
@@ -113,8 +139,7 @@
 
         // The Success Logic
         yesBtn.addEventListener('click', () => {
-            askSection.classList.add('hidden');
-            successSection.classList.remove('hidden');
+            showPage(3);
             
             // Trigger Confetti!
             confetti({
